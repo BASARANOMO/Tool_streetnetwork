@@ -1,7 +1,7 @@
 Copyright: ZHANG Mofan, CEREA EDF R&D - ENPC
 July 10 2019
 
-Tool used for deviding street segments and improving spatial resolution
+Small tool used for deviding street segments and improving spatial resolution, which is part of MUNICH model of Polyphemus project of CEREA.
 
 -------------------------------------------------------------
 Inputs: street.dat and intersection.dat
