@@ -1,5 +1,5 @@
 Copyright: ZHANG Mofan, CEREA EDF R&D - ENPC
-July 10 2019
+July 10th 2019
 
 Small tool used for deviding street segments and improving spatial resolution, which is part of MUNICH model of Polyphemus project of CEREA.
 
