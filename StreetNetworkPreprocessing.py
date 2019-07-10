@@ -6,14 +6,18 @@ Created on Monday July 8th 10:31:02 2019
 """
 
 import numpy as np
-import pandas as pd
+import cfg as cfg
 
-# Load street.dat and intersection.dat
-#count_street = 0
-#for line in open('street.dat').readlines(  ): count_street += 1
-#count_inter = 0
-#for line in open('intersection.dat').readlines(  ): count_inter += 1
+#--------------------------------------------------------------------------
+# Read hyper parameters in cfg
+# len_min: the length minimum of roads to be devided
+# true_inter_indicator: we mark down whether or not an intersection is created artificially
+len_min = cfg.len_min
+true_inter_indicator = cfg.true_inter_indicator
+#--------------------------------------------------------------------------
 
+#--------------------------------------------------------------------------
+# Initialization
 # street.dat
 street_id = []
 begin_inter = []
@@ -21,13 +25,17 @@ end_inter = []
 length = []
 width = []
 height = []
+
 # intersection.dat
 inter_id = []
 x_inter = []
 y_inter = []
 nstreet = []
 street_list = []
+#--------------------------------------------------------------------------
 
+#--------------------------------------------------------------------------
+# Read inputs
 # street.dat
 with open('street.dat', 'r') as f1:
     d1 = f1.readlines()
@@ -55,8 +63,11 @@ with open('intersection.dat', 'r') as f2:
         for j in range(nstreet[n_line]):
             street_list[n_line].append(int(k2[4 + j]))
         n_line = n_line + 1
-        
-# Create new road segments
+#--------------------------------------------------------------------------
+
+#--------------------------------------------------------------------------
+# Initialization
+# street_new and intersection_new
 street_id_new = []
 begin_inter_new = []
 end_inter_new = []
@@ -69,13 +80,16 @@ y_inter_new = y_inter.copy()
 nstreet_new = nstreet.copy()
 street_list_new = street_list.copy()
 true_inter = [1] * len(inter_id) # This parameter is used to distinguish true intersections and virtual intersections
+#--------------------------------------------------------------------------
 
+#--------------------------------------------------------------------------
+# Create new road segments and intersections
 inter_id_max = np.max(inter_id)
 street_id_max = np.max(street_id)
 count_street_new = 1 # count number of new streets
 count_inter_new = 1 # count number of new intersections
 for i in range(len(street_id)):
-    md = length[i] // 50 # number of new segments
+    md = length[i] // len_min # number of new segments
     for j in range(len(inter_id)):
         if begin_inter[i] == inter_id[j]:
             x_b = x_inter[j]
@@ -149,8 +163,10 @@ for i in range(len(street_id)):
         for k in range(int(md - 1)):
             street_list_new.append([street_id_new[int(count_street_new - md + k - 1)], 
                                     street_id_new[int(count_street_new - md + k)]])
+#--------------------------------------------------------------------------
 
-            
+#--------------------------------------------------------------------------
+# Generate _new files
 with open('street_new.dat', 'w') as f3:
     for i in range(len(street_id_new)): 
         f3.write(str(street_id_new[i]) + ';')
@@ -168,6 +184,7 @@ with open('intersection_new.dat', 'w') as f4:
         f4.write(str(nstreet_new[i]) + ';')
         for j in range(len(street_list_new[i])):
             f4.write(str(street_list_new[i][j]) + ';')
-        f4.write(str(true_inter[i]) + ';')
+        if true_inter_indicator == 1:
+            f4.write(str(true_inter[i]) + ';')
         f4.write('\n')
-            
+#--------------------------------------------------------------------------            
