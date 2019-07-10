@@ -1,4 +1,5 @@
 Copyright: ZHANG Mofan, CEREA EDF R&D - ENPC
+July 10 2019
 
 Tool used for deviding street segments and improving spatial resolution
 
