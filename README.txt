@@ -1,7 +1,4 @@
-Copyright: ZHANG Mofan, CEREA EDF R&D - ENPC
-July 10th 2019
-
-Small tool used for deviding street segments and improving spatial resolution, which is part of MUNICH model of Polyphemus project of CEREA.
+Tool used for deviding street segments and improving spatial resolution
 
 -------------------------------------------------------------
 Inputs: street.dat and intersection.dat
@@ -24,3 +21,5 @@ In intersection_new.dat
 #true_inter is a parameter added to distinguish true intersections and virtual intersections
 true_inter = 1: intersections are just from old intersection.dat
 true_inter = 0: new intersections created by the script to improve spatial resolution who have no physical senses
+
+

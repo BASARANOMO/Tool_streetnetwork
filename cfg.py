@@ -14,3 +14,8 @@ len_min = 50    # m
 # Are we going to mark down whether an intersection is created artificially or not?
 # yes == 1, no == 0
 true_inter_indicator = 0
+
+file_street = 'street.dat'
+file_intersection = 'intersection.dat'
+file_street_new = 'street_new.dat'
+file_intersection_new = 'intersection_new.dat'

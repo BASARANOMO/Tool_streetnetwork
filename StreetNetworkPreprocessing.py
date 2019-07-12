@@ -172,6 +172,7 @@ with open('street_new.dat', 'w') as f3:
         f3.write(str(street_id_new[i]) + ';')
         f3.write(str(begin_inter_new[i]) + ';')
         f3.write(str(end_inter_new[i]) + ';')
+        f3.write(str(height_new[i]) + ';')
         f3.write(str(width_new[i]) + ';')
         f3.write(str(height_new[i]))
         f3.write('\n')
