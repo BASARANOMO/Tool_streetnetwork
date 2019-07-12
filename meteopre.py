@@ -5,17 +5,15 @@ Created on Fri Jul 12 16:07:06 2019
 
 @author: ZHANG Mofan
 """
+import numpy as np
 
 def meteopreprocessing(data, street_corr):
-    data_new = data.copy()
-    
-    n_street = 0
-    for i in range(len(street_corr)):
-        n_street += len(street_corr[i]) # count new raod segments
-        
+    data_new = data.copy() 
+    n_street_added = 0
     for i in range(data.shape[1]):
         for j in range(len(street_corr[i]) - 1):
-            data_new = np.insert(data_new, 1, data_LMO[:, 1], axis = 1)
+            data_new = np.insert(data_new, i + 1 + n_street_added, data[:, i], axis = 1)
+            n_street_added += 1
     return data_new
 
 def read_meteo(file_name, shape):
