@@ -8,6 +8,7 @@ Created on Thu Jul 11 13:24:25 2019
 # Functional programming
 
 import numpy as np
+import glob, os
 
 def read_inputs_dat(file_street = 'street.dat', 
                     file_intersection = 'intersection.dat'):
@@ -242,7 +243,7 @@ def write_outputs_dat(parameters_street_new,
                 f4.write(str(true_inter[i]) + ';')
             f4.write('\n')
             
-def meteopreprocessing_street(data_street_old, street_corr):
+def binpreprocessing_street(data_street_old, street_corr):
     data_new = data_street_old.copy() 
     n_street_added = 0
     for i in range(data_street_old.shape[1]):
@@ -251,7 +252,7 @@ def meteopreprocessing_street(data_street_old, street_corr):
             n_street_added += 1
     return data_new
 
-def meteopreprocessing_inter(data_inter_old, data_street_old, inter_corr):
+def binpreprocessing_inter(data_inter_old, data_street_old, inter_corr):
     data_new = data_inter_old.copy()
     for i in range(len(inter_corr)):
         if ~np.isnan(inter_corr[i]):
@@ -259,7 +260,16 @@ def meteopreprocessing_inter(data_inter_old, data_street_old, inter_corr):
             data_new = np.append(data_new, data_street_old[:, inter_corr[i], None], axis = 1)
     return data_new
 
-def read_meteo(file_name, shape):
+def emissionpreprocessing_street(data, parameters_street_old, parameters_street_new):
+    data_new = np.zeros((data.shape[0], len(parameters_street_new["street_id_new"])))
+    k = 0
+    for i in range(data.shape[1]):
+        for j in range(len(parameters_street_new["street_corr"][i])):
+            data_new[:, k] = data[:, i] / parameters_street_old["length"][i] * parameters_street_new["length_new"][j]
+            k += 1
+    return data_new
+
+def read_bin(file_name, shape):
     length = 1
     for l in shape:
         length *= l
@@ -268,8 +278,95 @@ def read_meteo(file_name, shape):
     data = data.astype('d')
     return data
 
-def write_meteo(file_name, data):
+def write_bin(file_name, data):
     data_flatten = data.flatten().astype('f')
     with open(file_name, 'wb') as f_write_meteo:
         for i in range(len(data_flatten)):
             f_write_meteo.write(data_flatten[i])
+            
+def find_all_bin(bindir):
+    file_name_list = []
+    os.chdir(bindir)
+    for file in glob.glob("*.bin"):
+        file_name_list.append(file)
+    return file_name_list
+
+def find_all_folders(totaldir):
+    folder_name_list = []
+    for folder_name in os.walk(totaldir):
+        folder_name_list.append(str(folder_name[0]) + "/")
+    return folder_name_list
+
+def inputspreprocessing(bindir,
+                        parameters_street,
+                        parameters_street_new,
+                        parameters_inter_new,
+                        shape_street,
+                        shape_inter,
+                        treat_emission =  0,
+                        treat_background = 0,
+                        treat_meteo = 0,
+                        treat_photolysis = 0):
+    data_emission = {}
+    data_background = {}
+    data_meteo = {}
+    data_photolysis = {}
+    data_emission_new = {}
+    data_background_new = {}
+    data_meteo_new = {}
+    data_photolysis_new = {}
+    folder_name_list = find_all_folders(bindir)
+    for i in folder_name_list:
+        file_name_list = find_all_bin(i)
+        if "emission" in i and treat_emission:
+            print("-----------------------------------------------------")
+            print("Emission preprocessing...")
+            for j in file_name_list:
+                print("File name: " + j)
+                data_emission[i + j] = read_bin(j, shape_street)
+                data_emission_new[i + j] = emissionpreprocessing_street(data_emission[i + j], parameters_street, parameters_street_new)
+                address_string = i + j
+                write_bin(address_string[:address_string.index('.')] + '_new' + address_string[address_string.index('.'):], data_emission_new[i + j])
+            print("Emission preprocessing completed.")
+        if "background" in i and treat_background:
+            print("-----------------------------------------------------")
+            print("Background preprocessing...")
+            for j in file_name_list:
+                print("File name: " + j)
+                data_background[i + j] = read_bin(j, shape_street)
+                data_background_new[i + j] = binpreprocessing_street(data_background[i + j], parameters_street_new["street_corr"])
+                address_string = i + j
+                write_bin(address_string[:address_string.index('.')] + '_new' + address_string[address_string.index('.'):], data_background_new[i + j])
+            print("Background preprocessing completed.")
+        if "meteo" in i and treat_meteo:
+            print("-----------------------------------------------------")
+            print("Meteo preprocessing...")
+            for j in file_name_list:
+                print("File name: " + j)
+                if "Inter" in j:
+                    data_meteo[i + j] = read_bin(j, shape_inter)
+                else:
+                    data_meteo[i + j] = read_bin(j, shape_street)
+            for j in file_name_list:
+                if "Inter" in j:
+                    #data_meteo[i + j] = read_bin(j, shape_inter)
+                    string_inter = i + j
+                    string_street = string_inter.replace('Inter.bin', '.bin')
+                    data_meteo_new[i + j] = binpreprocessing_inter(data_meteo[i + j], data_meteo[string_street], parameters_inter_new["inter_corr"])
+                else:
+                    #data_meteo[i + j] = read_bin(j, shape_street)
+                    data_meteo_new[i + j] = binpreprocessing_street(data_meteo[i + j], parameters_street_new["street_corr"])
+                address_string = i + j
+                write_bin(address_string[:address_string.index('.')] + '_new' + address_string[address_string.index('.'):], data_meteo_new[i + j])
+            print("Meteo preprocessing completed.")
+        if "photolysis" in i and treat_photolysis:
+            print("-----------------------------------------------------")
+            print("Photolysis preprocessing...")
+            for j in file_name_list:
+                print("File name: " + j)
+                data_photolysis[i + j] = read_bin(j, shape_street)
+                data_photolysis_new[i + j] = binpreprocessing_street(data_photolysis[i + j], parameters_street_new["street_corr"])
+            print("Photolysis preprocessing completed.")
+    print("-----------------------------------------------------")
+    return      
+
