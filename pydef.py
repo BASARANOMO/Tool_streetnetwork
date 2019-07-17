@@ -131,11 +131,11 @@ def streetnetworkpreprocessing(parameters_street, parameters_inter, len_min):
                 if inter_id[k] == begin_inter[i]:
                     for l in range(len(street_list[k])):
                         if street_list[k][l] == street_id[i]:
-                            street_list_new[k][l] = street_id_new[int(count_street_new - 2)]
+                            street_list_new[k][l] = count_street_new - 1
                 if inter_id[k] == end_inter[i]:
                     for l in range(len(street_list[k])):
                         if street_list[k][l] == street_id[i]:
-                            street_list_new[k][l] = street_id_new[int(count_street_new - 2)]
+                            street_list_new[k][l] = count_street_new - 1
                         
         if md >= 2:
             delta_x = (x_e - x_b) / md
@@ -156,13 +156,13 @@ def streetnetworkpreprocessing(parameters_street, parameters_inter, len_min):
                 street_id_new.append(count_street_new)
                 if k == 0:
                     begin_inter_new.append(begin_inter[i])
-                    end_inter_new.append(inter_id_new[int(count_inter_new - md + k)])
-                if k == md - 1:
-                    begin_inter_new.append(inter_id_new[int(count_inter_new - md + k - 1)])
+                    end_inter_new.append(inter_id_new[int(len(inter_id) + count_inter_new - md)])
+                elif k == md - 1:
+                    begin_inter_new.append(inter_id_new[int(len(inter_id) + count_inter_new - 2)])
                     end_inter_new.append(end_inter[i])
                 else:
-                    begin_inter_new.append(inter_id_new[int(count_inter_new - md + k - 1)])
-                    end_inter_new.append(inter_id_new[int(count_inter_new  - md + k)])
+                    begin_inter_new.append(inter_id_new[int(len(inter_id) + count_inter_new - md + k - 1)])
+                    end_inter_new.append(inter_id_new[int(len(inter_id) + count_inter_new  - md + k)])
                 length_new.append(delta_length)
                 width_new.append(width[i])
                 height_new.append(height[i])
@@ -368,7 +368,7 @@ def inputspreprocessing(bindir,
             print("-----------------------------------------------------")
             print("Photolysis preprocessing...")
             for j in file_name_list:
-                print("File name: " + j)
+                print("Copy file name: " + j)
                 copyfile(j, newbindir + 'photolysis/' + j)
 #            for j in file_name_list:
 #                print("File name: " + j)

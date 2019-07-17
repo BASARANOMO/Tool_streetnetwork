@@ -72,9 +72,13 @@ bindir = cfg.bindir
 newbindir = cfg.newbindir
 if not os.path.exists(newbindir):
     os.makedirs(newbindir)
+if not os.path.exists(newbindir + 'emission/'):
     os.makedirs(newbindir + 'emission/')
+if not os.path.exists(newbindir + 'background/'):
     os.makedirs(newbindir + 'background/')
+if not os.path.exists(newbindir + 'meteo/'):
     os.makedirs(newbindir + 'meteo/')
+if not os.path.exists(newbindir + 'photolysis/'):
     os.makedirs(newbindir + 'photolysis/')
 inputspreprocessing(bindir,
                     newbindir,
