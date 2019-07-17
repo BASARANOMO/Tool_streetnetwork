@@ -19,8 +19,8 @@ true_inter_indicator = 0
 
 file_street = '/home/f05079/Documents/Polyphemus/Test/Inputs/street.dat'
 file_intersection = '/home/f05079/Documents/Polyphemus/Test/Inputs/intersection.dat'
-file_street_new = '/home/f05079/Documents/Polyphemus/Test/Inputs/street_new.dat'
-file_intersection_new = '/home/f05079/Documents/Polyphemus/Test/Inputs/intersection_new.dat'
+file_street_new = '/home/f05079/Documents/Polyphemus/Test/Inputs_new/street.dat'
+file_intersection_new = '/home/f05079/Documents/Polyphemus/Test/Inputs_new/intersection.dat'
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
@@ -28,9 +28,12 @@ file_intersection_new = '/home/f05079/Documents/Polyphemus/Test/Inputs/intersect
 # meteo, background, emission, photolysis
 shape_street = [2568, 577] # Nt x Nstreet
 shape_inter = [2568, 433] # Nt x Ninter
+# Path of inputs data
 bindir = '/home/f05079/Documents/Polyphemus/Test/Inputs/'
+newbindir = '/home/f05079/Documents/Polyphemus/Test/Inputs_new/'
+# If we do not want to treat these files, mark 0
 treat_emission = 1
 treat_background = 1
 treat_meteo = 1
-treat_photolysis = 0
+treat_photolysis = 1
 # -------------------------------------------------------------------

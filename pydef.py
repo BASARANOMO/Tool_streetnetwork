@@ -9,6 +9,7 @@ Created on Thu Jul 11 13:24:25 2019
 
 import numpy as np
 import glob, os
+from shutil import copyfile
 
 def read_inputs_dat(file_street = 'street.dat', 
                     file_intersection = 'intersection.dat'):
@@ -298,6 +299,7 @@ def find_all_folders(totaldir):
     return folder_name_list
 
 def inputspreprocessing(bindir,
+                        newbindir,
                         parameters_street,
                         parameters_street_new,
                         parameters_inter_new,
@@ -326,7 +328,8 @@ def inputspreprocessing(bindir,
                 data_emission[i + j] = read_bin(j, shape_street)
                 data_emission_new[i + j] = emissionpreprocessing_street(data_emission[i + j], parameters_street, parameters_street_new)
                 address_string = i + j
-                write_bin(address_string[:address_string.index('.')] + '_new' + address_string[address_string.index('.'):], data_emission_new[i + j])
+                write_bin(newbindir + 'emission/' + j, data_emission_new[i + j])
+                #write_bin(address_string[:address_string.index('.')] + '_new' + address_string[address_string.index('.'):], data_emission_new[i + j])
             print("Emission preprocessing completed.")
         if "background" in i and treat_background:
             print("-----------------------------------------------------")
@@ -336,7 +339,8 @@ def inputspreprocessing(bindir,
                 data_background[i + j] = read_bin(j, shape_street)
                 data_background_new[i + j] = binpreprocessing_street(data_background[i + j], parameters_street_new["street_corr"])
                 address_string = i + j
-                write_bin(address_string[:address_string.index('.')] + '_new' + address_string[address_string.index('.'):], data_background_new[i + j])
+                write_bin(newbindir + 'background/' + j, data_background_new[i + j])
+                #write_bin(address_string[:address_string.index('.')] + '_new' + address_string[address_string.index('.'):], data_background_new[i + j])
             print("Background preprocessing completed.")
         if "meteo" in i and treat_meteo:
             print("-----------------------------------------------------")
@@ -357,15 +361,19 @@ def inputspreprocessing(bindir,
                     #data_meteo[i + j] = read_bin(j, shape_street)
                     data_meteo_new[i + j] = binpreprocessing_street(data_meteo[i + j], parameters_street_new["street_corr"])
                 address_string = i + j
-                write_bin(address_string[:address_string.index('.')] + '_new' + address_string[address_string.index('.'):], data_meteo_new[i + j])
+                write_bin(newbindir + 'meteo/' + j, data_meteo_new[i + j])
+                #write_bin(address_string[:address_string.index('.')] + '_new' + address_string[address_string.index('.'):], data_meteo_new[i + j])
             print("Meteo preprocessing completed.")
         if "photolysis" in i and treat_photolysis:
             print("-----------------------------------------------------")
             print("Photolysis preprocessing...")
             for j in file_name_list:
                 print("File name: " + j)
-                data_photolysis[i + j] = read_bin(j, shape_street)
-                data_photolysis_new[i + j] = binpreprocessing_street(data_photolysis[i + j], parameters_street_new["street_corr"])
+                copyfile(j, newbindir + 'photolysis/' + j)
+#            for j in file_name_list:
+#                print("File name: " + j)
+#                data_photolysis[i + j] = read_bin(j, shape_street)
+#                data_photolysis_new[i + j] = binpreprocessing_street(data_photolysis[i + j], parameters_street_new["street_corr"])
             print("Photolysis preprocessing completed.")
     print("-----------------------------------------------------")
     return      

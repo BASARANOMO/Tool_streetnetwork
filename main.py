@@ -11,6 +11,7 @@ Created on Fri Jul 12 11:31:45 2019
 import numpy as np
 import cfg as cfg
 from pydef import *
+import os
 import datetime
 print("#####################################################")
 print("Street network and inputs data batch preprocessing...")
@@ -48,6 +49,10 @@ write_outputs_dat(parameters_street_new,
                   file_street_new,
                   file_intersection_new,
                   true_inter_indicator)
+print("Path of new street file: ")
+print(file_street_new)
+print("Path of new intersection file: ")
+print(file_intersection_new)
 print("Completed.")
 print("-----------------------------------------------------")
 # -------------------------------------------------------------------
@@ -64,7 +69,15 @@ treat_photolysis = cfg.treat_photolysis
 shape_street = cfg.shape_street
 shape_inter = cfg.shape_inter
 bindir = cfg.bindir
+newbindir = cfg.newbindir
+if not os.path.exists(newbindir):
+    os.makedirs(newbindir)
+    os.makedirs(newbindir + 'emission/')
+    os.makedirs(newbindir + 'background/')
+    os.makedirs(newbindir + 'meteo/')
+    os.makedirs(newbindir + 'photolysis/')
 inputspreprocessing(bindir,
+                    newbindir,
                     parameters_street,
                     parameters_street_new,
                     parameters_inter_new,
@@ -77,5 +90,6 @@ inputspreprocessing(bindir,
 # -------------------------------------------------------------------
 
 print("#####################################################")
-print('All new data files are noted by a "_new" suffix.')
+print('New inputs files are stored in: ')
+print(newbindir)
 print("#####################################################")
