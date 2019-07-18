@@ -116,7 +116,7 @@ def streetnetworkpreprocessing(parameters_street, parameters_inter, len_min):
             if end_inter[i] == inter_id[j]:
                 x_e = x_inter[j]
                 y_e = y_inter[j]
-        if md == 0 or md == 1:
+        if md == 0:
             street_id_new.append(count_street_new)
             begin_inter_new.append(begin_inter[i])
             end_inter_new.append(end_inter[i])
@@ -137,12 +137,12 @@ def streetnetworkpreprocessing(parameters_street, parameters_inter, len_min):
                         if street_list[k][l] == street_id[i]:
                             street_list_new[k][l] = count_street_new - 1
                         
-        if md >= 2:
-            delta_x = (x_e - x_b) / md
-            delta_y = (y_e - y_b) / md
-            delta_length = length[i] / md
+        elif md >= 1:
+            delta_x = (x_e - x_b) / (md + 1)
+            delta_y = (y_e - y_b) / (md + 1)
+            delta_length = length[i] / (md + 1)
             # Create new intersections
-            for k in range(int(md - 1)):
+            for k in range(int(md)):
                 inter_id_new.append(count_inter_new + inter_id_max)
                 x_inter_new.append(x_b + (k + 1) * delta_x)
                 y_inter_new.append(y_b + (k + 1) * delta_y)
@@ -152,17 +152,17 @@ def streetnetworkpreprocessing(parameters_street, parameters_inter, len_min):
                 count_inter_new += 1
             street_corr_prime = []
             # Divide this street to md new street segments
-            for k in range(int(md)):
+            for k in range(int(md + 1)):
                 street_id_new.append(count_street_new)
                 if k == 0:
                     begin_inter_new.append(begin_inter[i])
-                    end_inter_new.append(inter_id_new[int(len(inter_id) + count_inter_new - md)])
-                elif k == md - 1:
+                    end_inter_new.append(inter_id_new[int(len(inter_id) + count_inter_new - md - 1)])
+                elif k == md:
                     begin_inter_new.append(inter_id_new[int(len(inter_id) + count_inter_new - 2)])
                     end_inter_new.append(end_inter[i])
                 else:
-                    begin_inter_new.append(inter_id_new[int(len(inter_id) + count_inter_new - md + k - 1)])
-                    end_inter_new.append(inter_id_new[int(len(inter_id) + count_inter_new  - md + k)])
+                    begin_inter_new.append(inter_id_new[int(len(inter_id) + count_inter_new - md + k - 2)])
+                    end_inter_new.append(inter_id_new[int(len(inter_id) + count_inter_new  - md + k - 1)])
                 length_new.append(delta_length)
                 width_new.append(width[i])
                 height_new.append(height[i])
@@ -175,16 +175,16 @@ def streetnetworkpreprocessing(parameters_street, parameters_inter, len_min):
                 if inter_id[k] == begin_inter[i]:
                     for l in range(len(street_list[k])):
                         if street_list[k][l] == street_id[i]:
-                            street_list_new[k][l] = street_id_new[int(count_street_new - md - 1)]
+                            street_list_new[k][l] = street_id_new[int(count_street_new - md - 2)]
                 if inter_id[k] == end_inter[i]:
                     for l in range(len(street_list[k])):
                         if street_list[k][l] == street_id[i]:
                             street_list_new[k][l] = street_id_new[int(count_street_new - 2)]
                     
             # Adapt street_list of new intersections
-            for k in range(int(md - 1)):
-                street_list_new.append([street_id_new[int(count_street_new - md + k - 1)], 
-                                        street_id_new[int(count_street_new - md + k)]])
+            for k in range(int(md)):
+                street_list_new.append([street_id_new[int(count_street_new - md + k - 2)], 
+                                        street_id_new[int(count_street_new - md + k - 1)]])
     
     parameters_street_new = {"street_id_new": street_id_new,
                              "begin_inter_new": begin_inter_new,
